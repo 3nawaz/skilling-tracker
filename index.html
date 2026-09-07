@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Skilling Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input, select, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #218838; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Register Candidate Data</h2>
+    <input type="text" id="name" placeholder="Candidate Name" required>
+    <input type="text" id="scheme" placeholder="Training Scheme (e.g., PMKVY)" required>
+    <select id="placed">
+        <option value="true">Placed Successfully</option>
+        <option value="false">Not Placed</option>
+    </select>
+    <button onclick="registerCandidate()">Add to Unified Trail</button>
+
+    <h2>Live Outcome Tracking</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Training Scheme</th>
+                <th>Placed</th>
+                <th>Long-term Retention</th>
+            </tr>
+        </thead>
+        <tbody id="dashboard-body">
+            <!-- Data will load here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const API_URL = "http://127.0.0.1:8000";
+
+    async function fetchDashboard() {
+        const response = await fetch(`${API_URL}/candidates`);
+        const data = await response.json();
+        const tbody = document.getElementById("dashboard-body");
+        tbody.innerHTML = ""; 
+        
+        data.forEach(candidate => {
+            const row = `<tr>
+                <td>${candidate.name}</td>
+                <td>${candidate.training_scheme}</td>
+                <td>${candidate.placed ? "✅ Yes" : "❌ No"}</td>
+                <td>${candidate.retention_verified ? "Verified" : "Pending 6-Mo Check"}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    async function registerCandidate() {
+        const name = document.getElementById("name").value;
+        const scheme = document.getElementById("scheme").value;
+        const placed = document.getElementById("placed").value === "true";
+
+        await fetch(`${API_URL}/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: name, training_scheme: scheme, placed: placed })
+        });
+
+        fetchDashboard(); // Reload the table instantly
+    }
+
+    // Load data when page opens
+    fetchDashboard();
+</script>
+
+</body>
+</html>
