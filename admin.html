@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Government Impact Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            background: #f5f6fa;
+            padding: 30px;
+        }
+
+        .dashboard {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow:
+                0 3px 10px rgba(0,0,0,.08);
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .chart-box {
+            margin-top: 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>
+        Government Skilling Impact Dashboard
+    </h1>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h3>Total Candidates</h3>
+
+            <div
+                class="number"
+                id="total">
+                -
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Placement Rate</h3>
+
+            <div
+                class="number"
+                id="placement">
+                -
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Certification Rate</h3>
+
+            <div
+                class="number"
+                id="certification">
+                -
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Verified Placements</h3>
+
+            <div
+                class="number"
+                id="verified">
+                -
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="chart-box">
+
+        <h2>
+            Long-term Employment Retention
+        </h2>
+
+        <canvas id="retentionChart"></canvas>
+
+    </div>
+
+</div>
+
+
+<script>
+
+async function loadDashboard() {
+
+    const response =
+        await fetch(
+            "http://127.0.0.1:8000/dashboard/impact"
+        );
+
+    const data =
+        await response.json();
+
+    document.getElementById("total")
+        .innerText =
+        data.total_candidates;
+
+    document.getElementById("placement")
+        .innerText =
+        data.placement_rate + "%";
+
+    document.getElementById("certification")
+        .innerText =
+        data.certification_rate + "%";
+
+    document.getElementById("verified")
+        .innerText =
+        data.verified_placements;
+
+}
+
+
+async function loadRetention() {
+
+    const response =
+        await fetch(
+            "http://127.0.0.1:8000/dashboard/retention"
+        );
+
+    const data =
+        await response.json();
+
+    new Chart(
+        document.getElementById(
+            "retentionChart"
+        ),
+        {
+
+            type: "bar",
+
+            data: {
+
+                labels: [
+                    "3 Months",
+                    "6 Months",
+                    "12 Months",
+                    "24 Months"
+                ],
+
+                datasets: [
+
+                    {
+                        label:
+                            "Employment Rate",
+
+                        data: [
+
+                            data["3_months"]
+                                .employment_rate,
+
+                            data["6_months"]
+                                .employment_rate,
+
+                            data["12_months"]
+                                .employment_rate,
+
+                            data["24_months"]
+                                .employment_rate
+
+                        ]
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+loadDashboard();
+loadRetention();
+
+</script>
+
+</body>
+
+</html>
