@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Career Check-in</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f9;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        input,
+        select,
+        textarea,
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Career Check-in</h1>
+
+    <p>
+        Track your employment journey after completing training.
+    </p>
+
+    <form id="checkinForm">
+
+        <label>Candidate ID</label>
+        <input id="candidate_id" required>
+
+        <label>Check-in Period</label>
+
+        <select id="period">
+
+            <option value="3_months">
+                3 Months
+            </option>
+
+            <option value="6_months">
+                6 Months
+            </option>
+
+            <option value="12_months">
+                12 Months
+            </option>
+
+            <option value="24_months">
+                24 Months
+            </option>
+
+        </select>
+
+        <label>Employment Status</label>
+
+        <select id="employed">
+
+            <option value="true">
+                Employed
+            </option>
+
+            <option value="false">
+                Not Employed
+            </option>
+
+        </select>
+
+        <label>Company</label>
+        <input id="company">
+
+        <label>Job Role</label>
+        <input id="job_role">
+
+        <label>Monthly Salary</label>
+        <input id="salary" type="number">
+
+        <label>Are you using the skills learned?</label>
+
+        <select id="skills_used">
+
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+
+        </select>
+
+        <label>Have you received a promotion?</label>
+
+        <select id="promotion">
+
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+
+        </select>
+
+        <label>Additional training required</label>
+
+        <textarea id="training_needed"></textarea>
+
+        <button type="submit">
+            Submit Check-in
+        </button>
+
+    </form>
+
+    <p id="message"></p>
+
+</div>
+
+
+<script>
+
+document
+.getElementById("checkinForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const data = {
+
+        candidate_id:
+            document.getElementById("candidate_id").value,
+
+        period:
+            document.getElementById("period").value,
+
+        employed:
+            document.getElementById("employed").value === "true",
+
+        company:
+            document.getElementById("company").value,
+
+        job_role:
+            document.getElementById("job_role").value,
+
+        salary:
+            Number(document.getElementById("salary").value || 0),
+
+        skills_used:
+            document.getElementById("skills_used").value === "true",
+
+        promotion:
+            document.getElementById("promotion").value === "true",
+
+        training_needed:
+            document.getElementById("training_needed").value
+
+    };
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:8000/checkin",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify(data)
+            }
+        );
+
+        const result = await response.json();
+
+        document.getElementById("message")
+            .innerText = result.message;
+
+    } catch(error) {
+
+        document.getElementById("message")
+            .innerText =
+            "Unable to connect to server.";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
