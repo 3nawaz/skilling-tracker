@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Course Impact Tracker</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    #47245d,
+                    transparent 40%
+                ),
+                radial-gradient(
+                    circle at 90% 10%,
+                    #202c68,
+                    transparent 45%
+                ),
+                radial-gradient(
+                    circle at 50% 100%,
+                    #182b54,
+                    transparent 50%
+                ),
+                #0d1225;
+
+            color: white;
+
+            padding: 25px;
+        }
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+
+        .container {
+
+            max-width: 850px;
+
+            margin: auto;
+
+            background: rgba(255,255,255,0.07);
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            backdrop-filter: blur(20px);
+
+            border-radius: 25px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.35);
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+
+            font-size: 28px;
+
+            margin-bottom: 8px;
+        }
+
+        .header p {
+
+            color: rgba(255,255,255,0.6);
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           SECTION
+        ========================= */
+
+        .section {
+
+            margin-top: 25px;
+        }
+
+        .section h2 {
+
+            font-size: 19px;
+
+            margin-bottom: 18px;
+        }
+
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 18px;
+        }
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .form-group label {
+
+            font-size: 12px;
+
+            margin-bottom: 7px;
+
+            color: rgba(255,255,255,0.65);
+        }
+
+        .form-group input,
+        .form-group select {
+
+            padding: 13px;
+
+            border-radius: 10px;
+
+            border: 1px solid
+                rgba(255,255,255,0.18);
+
+            background:
+                rgba(255,255,255,0.06);
+
+            color: white;
+
+            outline: none;
+        }
+
+        .form-group select option {
+
+            background: #161c35;
+
+            color: white;
+        }
+
+
+        /* =========================
+           BUTTON
+        ========================= */
+
+        .primary-btn {
+
+            width: 100%;
+
+            margin-top: 25px;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #6e5ce7,
+                    #416ee2
+                );
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+        .primary-btn:hover {
+
+            opacity: 0.9;
+        }
+
+
+        /* =========================
+           COURSE LIST
+        ========================= */
+
+        .course-list {
+
+            margin-top: 15px;
+        }
+
+        .course-item {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 12px 15px;
+
+            margin-bottom: 8px;
+
+            background:
+                rgba(255,255,255,0.05);
+
+            border-radius: 10px;
+        }
+
+        .course-item button {
+
+            border: none;
+
+            background: #e05252;
+
+            color: white;
+
+            padding: 6px 10px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+        }
+
+
+        /* =========================
+           MODAL
+        ========================= */
+
+        .modal {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0,0,0,0.7);
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
+        }
+
+        .modal-box {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            background: #171d38;
+
+            border-radius: 20px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .modal-box h2 {
+
+            margin-bottom: 10px;
+        }
+
+        .modal-box p {
+
+            color: rgba(255,255,255,0.6);
+
+            font-size: 13px;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================
+           RATING
+        ========================= */
+
+        .stars {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            margin: 20px 0;
+        }
+
+        .star {
+
+            font-size: 35px;
+
+            color: #555;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .star.active {
+
+            color: gold;
+        }
+
+
+        textarea {
+
+            width: 100%;
+
+            height: 100px;
+
+            resize: none;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            border: 1px solid
+                rgba(255,255,255,0.15);
+
+            background:
+                rgba(255,255,255,0.05);
+
+            color: white;
+
+            outline: none;
+        }
+
+
+        /* =========================
+           DASHBOARD
+        ========================= */
+
+        #dashboard {
+
+            display: none;
+        }
+
+        .dashboard-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .dashboard-header h2 {
+
+            font-size: 24px;
+        }
+
+        .profile-card {
+
+            background:
+                rgba(255,255,255,0.06);
+
+            border-radius: 15px;
+
+            padding: 20px;
+
+            margin-bottom: 25px;
+        }
+
+        .profile-card p {
+
+            color: rgba(255,255,255,0.65);
+
+            margin: 7px 0;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           COURSE CARDS
+        ========================= */
+
+        .course-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2,1fr);
+
+            gap: 15px;
+        }
+
+        .course-card {
+
+            background:
+                rgba(255,255,255,0.06);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.12);
+
+            border-radius: 15px;
+
+            padding: 18px;
+        }
+
+        .course-card h3 {
+
+            font-size: 16px;
+
+            margin-bottom: 10px;
+        }
+
+        .rating {
+
+            color: gold;
+
+            font-weight: bold;
+        }
+
+        .course-card p {
+
+            color:
+                rgba(255,255,255,0.55);
+
+            font-size: 12px;
+
+            margin-top: 7px;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media(max-width:600px) {
+
+            body {
+
+                padding: 12px;
+            }
+
+            .container {
+
+                padding: 22px 17px;
+            }
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .course-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+
+                font-size: 23px;
+            }
+
+            .dashboard-header {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 8px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- =========================
+         PROFILE SETUP
+    ========================= -->
+
+    <div id="profileSection">
+
+        <div class="header">
+
+            <h1>
+                Course Impact Tracker
+            </h1>
+
+            <p>
+                Tell us about yourself to personalize
+                your career recommendations.
+            </p>
+
+        </div>
+
+
+        <div class="section">
+
+            <h2>
+                Basic Information
+            </h2>
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Age
+                    </label>
+
+                    <input
+                        type="number"
+                        id="age"
+                        min="15"
+                        max="80"
+                        placeholder="Enter your age"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Gender
+                    </label>
+
+                    <select id="gender">
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option>
+                            Male
+                        </option>
+
+                        <option>
+                            Female
+                        </option>
+
+                        <option>
+                            Prefer not to say
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Year of Graduation
+                    </label>
+
+                    <input
+                        type="number"
+                        id="graduationYear"
+                        placeholder="e.g. 2027"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Education Level
+                    </label>
+
+                    <select id="education">
+
+                        <option>
+                            Select
+                        </option>
+
+                        <option>
+                            Class 10
+                        </option>
+
+                        <option>
+                            Class 12
+                        </option>
+
+                        <option>
+                            Diploma
+                        </option>
+
+                        <option>
+                            Undergraduate
+                        </option>
+
+                        <option>
+                            Postgraduate
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             COURSES
+        ========================= -->
+
+        <div class="section">
+
+            <h2>
+                Completed Courses
+            </h2>
+
+            <p
+                style="
+                color:rgba(255,255,255,.55);
+                font-size:12px;
+                "
+            >
+                Add the courses you have completed.
+                You will be asked to review each course.
+            </p>
+
+
+            <div
+                id="courseList"
+                class="course-list"
+            ></div>
+
+
+            <button
+                class="primary-btn"
+                onclick="openCourseModal()"
+            >
+                + Add Completed Course
+            </button>
+
+
+            <button
+                class="primary-btn"
+                onclick="finishProfile()"
+            >
+                Continue to Dashboard →
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         DASHBOARD
+    ========================= -->
+
+    <div id="dashboard">
+
+        <div class="dashboard-header">
+
+            <h2>
+                Your Dashboard
+            </h2>
+
+            <span>
+                Course Recommendations
+            </span>
+
+        </div>
+
+
+        <div
+            id="profileInfo"
+            class="profile-card"
+        ></div>
+
+
+        <h2
+            style="
+            margin-bottom:15px;
+            font-size:18px;
+            "
+        >
+            Recommended Courses
+        </h2>
+
+
+        <div
+            id="recommendations"
+            class="course-grid"
+        ></div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================
+     COURSE FEEDBACK MODAL
+========================= -->
+
+<div
+    id="courseModal"
+    class="modal"
+>
+
+    <div class="modal-box">
+
+        <h2>
+            Course Feedback
+        </h2>
+
+        <p>
+            Enter the course you completed and
+            tell other learners how useful it was.
+        </p>
+
+
+        <div class="form-group">
+
+            <label>
+                Course Name
+            </label>
+
+            <input
+                type="text"
+                id="courseName"
+                placeholder="e.g. Python for Data Science"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Year Completed
+            </label>
+
+            <input
+                type="number"
+                id="courseYear"
+                placeholder="e.g. 2025"
+            >
+
+        </div>
+
+
+        <p
+            style="
+            margin-top:20px;
+            margin-bottom:5px;
+            "
+        >
+            Rate this course out of 5
+        </p>
+
+
+        <div class="stars">
+
+            <span
+                class="star"
+                onclick="setRating(1)"
+            >
+                ★
+            </span>
+
+            <span
+                class="star"
+                onclick="setRating(2)"
+            >
+                ★
+            </span>
+
+            <span
+                class="star"
+                onclick="setRating(3)"
+            >
+                ★
+            </span>
+
+            <span
+                class="star"
+                onclick="setRating(4)"
+            >
+                ★
+            </span>
+
+            <span
+                class="star"
+                onclick="setRating(5)"
+            >
+                ★
+            </span>
+
+        </div>
+
+
+        <textarea
+            id="feedback"
+            placeholder="Was this course useful for your career? Share your experience..."
+        ></textarea>
+
+
+        <button
+            class="primary-btn"
+            onclick="saveCourse()"
+        >
+            Save Course Review
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+    /* =========================
+       DATA
+    ========================= */
+
+    let courses = [];
+
+    let selectedRating = 0;
+
+
+    /* =========================
+       OPEN MODAL
+    ========================= */
+
+    function openCourseModal() {
+
+        document
+            .getElementById("courseModal")
+            .style.display = "flex";
+
+    }
+
+
+    /* =========================
+       RATING
+    ========================= */
+
+    function setRating(rating) {
+
+        selectedRating = rating;
+
+        const stars =
+            document.querySelectorAll(".star");
+
+        stars.forEach(
+            (star,index) => {
+
+                if(index < rating) {
+
+                    star.classList.add("active");
+
+                } else {
+
+                    star.classList.remove("active");
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================
+       SAVE COURSE
+    ========================= */
+
+    function saveCourse() {
+
+        const name =
+            document
+            .getElementById("courseName")
+            .value
+            .trim();
+
+        const year =
+            document
+            .getElementById("courseYear")
+            .value;
+
+        const feedback =
+            document
+            .getElementById("feedback")
+            .value
+            .trim();
+
+
+        if(!name) {
+
+            alert("Please enter the course name.");
+
+            return;
+        }
+
+
+        if(!year) {
+
+            alert("Please enter the completion year.");
+
+            return;
+        }
+
+
+        if(selectedRating === 0) {
+
+            alert("Please give a rating.");
+
+            return;
+        }
+
+
+        courses.push({
+
+            name:name,
+
+            year:year,
+
+            rating:selectedRating,
+
+            feedback:feedback
+
+        });
+
+
+        displayCourses();
+
+
+        /* Clear modal */
+
+        document
+            .getElementById("courseName")
+            .value = "";
+
+        document
+            .getElementById("courseYear")
+            .value = "";
+
+        document
+            .getElementById("feedback")
+            .value = "";
+
+        selectedRating = 0;
+
+        document
+            .querySelectorAll(".star")
+            .forEach(
+                star =>
+                star.classList.remove("active")
+            );
+
+
+        document
+            .getElementById("courseModal")
+            .style.display = "none";
+
+    }
+
+
+    /* =========================
+       DISPLAY COMPLETED COURSES
+    ========================= */
+
+    function displayCourses() {
+
+        const list =
+            document.getElementById("courseList");
+
+        list.innerHTML = "";
+
+
+        courses.forEach(
+            (course,index) => {
+
+                const item =
+                    document.createElement("div");
+
+                item.className =
+                    "course-item";
+
+
+                item.innerHTML = `
+
+                    <div>
+
+                        <strong>
+                            ${course.name}
+                        </strong>
+
+                        <br>
+
+                        <small
+                            style="
+                            color:rgba(255,255,255,.5);
+                            "
+                        >
+                            Completed: ${course.year}
+                            |
+                            Rating: ${course.rating}/5
+                        </small>
+
+                    </div>
+
+                    <button
+                        onclick="removeCourse(${index})"
+                    >
+                        Remove
+                    </button>
+
+                `;
+
+
+                list.appendChild(item);
+
+            }
+        );
+
+    }
+
+
+    /* =========================
+       REMOVE COURSE
+    ========================= */
+
+    function removeCourse(index) {
+
+        courses.splice(index,1);
+
+        displayCourses();
+
+    }
+
+
+    /* =========================
+       FINISH PROFILE
+    ========================= */
+
+    function finishProfile() {
+
+        const age =
+            document
+            .getElementById("age")
+            .value;
+
+        const gender =
+            document
+            .getElementById("gender")
+            .value;
+
+        const graduation =
+            document
+            .getElementById("graduationYear")
+            .value;
+
+        const education =
+            document
+            .getElementById("education")
+            .value;
+
+
+        if(!age ||
+           !gender ||
+           !graduation ||
+           education === "Select") {
+
+            alert(
+                "Please complete your basic information."
+            );
+
+            return;
+        }
+
+
+        if(courses.length === 0) {
+
+            alert(
+                "Please add at least one completed course."
+            );
+
+            return;
+        }
+
+
+        /* Hide profile */
+
+        document
+            .getElementById("profileSection")
+            .style.display = "none";
+
+
+        /* Show dashboard */
+
+        document
+            .getElementById("dashboard")
+            .style.display = "block";
+
+
+        /* Display profile */
+
+        document
+            .getElementById("profileInfo")
+            .innerHTML = `
+
+                <p>
+                    <strong>Age:</strong>
+                    ${age}
+                </p>
+
+                <p>
+                    <strong>Gender:</strong>
+                    ${gender}
+                </p>
+
+                <p>
+                    <strong>Graduation:</strong>
+                    ${graduation}
+                </p>
+
+                <p>
+                    <strong>Education:</strong>
+                    ${education}
+                </p>
+
+                <p>
+                    <strong>Courses Completed:</strong>
+                    ${courses.length}
+                </p>
+
+            `;
+
+
+        showRecommendations();
+
+    }
+
+
+    /* =========================
+       DEMO COURSE DATABASE
+    ========================= */
+
+    const availableCourses = [
+
+        {
+            name:
+                "Python for Data Science",
+
+            rating:
+                4.7,
+
+            reviews:
+                128
+        },
+
+        {
+            name:
+                "Full Stack Web Development",
+
+            rating:
+                4.5,
+
+            reviews:
+                96
+        },
+
+        {
+            name:
+                "Data Analytics with SQL",
+
+            rating:
+                4.8,
+
+            reviews:
+                153
+        },
+
+        {
+            name:
+                "Machine Learning Fundamentals",
+
+            rating:
+                4.6,
+
+            reviews:
+                112
+        },
+
+        {
+            name:
+                "Cloud Computing",
+
+            rating:
+                4.3,
+
+            reviews:
+                84
+        },
+
+        {
+            name:
+                "Cyber Security Fundamentals",
+
+            rating:
+                4.4,
+
+            reviews:
+                71
+        }
+
+    ];
+
+
+    /* =========================
+       RECOMMENDATIONS
+    ========================= */
+
+    function showRecommendations() {
+
+        const completed =
+            courses.map(
+                course =>
+                course.name.toLowerCase()
+            );
+
+
+        const recommended =
+            availableCourses
+            .filter(
+                course =>
+                !completed.includes(
+                    course.name.toLowerCase()
+                )
+            )
+            .sort(
+                (a,b) =>
+                b.rating - a.rating
+            );
+
+
+        const container =
+            document
+            .getElementById("recommendations");
+
+
+        container.innerHTML = "";
+
+
+        recommended.forEach(
+            course => {
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "course-card";
+
+
+                card.innerHTML = `
+
+                    <h3>
+                        ${course.name}
+                    </h3>
+
+                    <div class="rating">
+                        ★ ${course.rating}/5
+                    </div>
+
+                    <p>
+                        Based on ${course.reviews}
+                        learner reviews
+                    </p>
+
+                    <p>
+                        Recommended because
+                        learners rated this course highly.
+                    </p>
+
+                `;
+
+
+                container.appendChild(card);
+
+            }
+        );
+
+    }
+
+</script>
+
+</body>
+
+</html>
