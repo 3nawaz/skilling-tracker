@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Course Impact Tracker - Login</title>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background:
+                radial-gradient(
+                    circle at 15% 20%,
+                    #5c2030,
+                    transparent 40%
+                ),
+                radial-gradient(
+                    circle at 80% 15%,
+                    #1e1b4b,
+                    transparent 45%
+                ),
+                radial-gradient(
+                    circle at 30% 90%,
+                    #1d2d50,
+                    transparent 45%
+                ),
+                radial-gradient(
+                    circle at 85% 85%,
+                    #3b426e,
+                    transparent 50%
+                ),
+                #111322;
+
+            background-size: cover;
+            padding: 20px;
+            color: white;
+        }
+
+        /* =========================
+           MAIN LOGIN CARD
+        ========================= */
+
+        .login-container {
+            width: 100%;
+            max-width: 430px;
+
+            padding: 35px 32px;
+
+            background: rgba(255, 255, 255, 0.075);
+
+            border: 1px solid rgba(255, 255, 255, 0.15);
+
+            border-radius: 28px;
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.35);
+
+            text-align: center;
+        }
+
+        /* =========================
+           LOGO
+        ========================= */
+
+        .logo {
+            width: 75px;
+            height: 75px;
+
+            margin: 0 auto 18px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            border-radius: 20px;
+
+            background: linear-gradient(
+                135deg,
+                #7467e8,
+                #3b6be5
+            );
+
+            box-shadow: 0 10px 30px rgba(69, 86, 220, 0.35);
+        }
+
+        .logo i {
+            font-size: 34px;
+        }
+
+        /* =========================
+           HEADINGS
+        ========================= */
+
+        .brand-name {
+            font-size: 27px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .tagline {
+            margin-top: 7px;
+
+            color: rgba(255, 255, 255, 0.58);
+
+            font-size: 13px;
+        }
+
+        .login-title {
+            margin-top: 32px;
+
+            font-size: 23px;
+            font-weight: 600;
+        }
+
+        .login-subtitle {
+            margin-top: 8px;
+            margin-bottom: 28px;
+
+            color: rgba(255, 255, 255, 0.58);
+
+            font-size: 13px;
+        }
+
+        /* =========================
+           INPUT
+        ========================= */
+
+        .input-group {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+
+            width: 100%;
+
+            margin-bottom: 18px;
+
+            border: 1px solid rgba(255, 255, 255, 0.20);
+
+            border-radius: 14px;
+
+            background: rgba(255, 255, 255, 0.035);
+
+            transition: 0.25s;
+        }
+
+        .input-group:focus-within {
+            border-color: #657cf0;
+
+            box-shadow:
+                0 0 0 3px rgba(101, 124, 240, 0.12);
+        }
+
+        .input-icon {
+            width: 48px;
+
+            color: rgba(255, 255, 255, 0.65);
+
+            font-size: 16px;
+        }
+
+        .input-group input {
+            width: 100%;
+
+            padding: 15px 45px 15px 0;
+
+            border: none;
+            outline: none;
+
+            background: transparent;
+
+            color: white;
+
+            font-size: 14px;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.50);
+        }
+
+        /* Password eye button */
+
+        .password-toggle {
+            position: absolute;
+
+            right: 15px;
+
+            background: none;
+            border: none;
+
+            color: rgba(255, 255, 255, 0.55);
+
+            cursor: pointer;
+
+            font-size: 15px;
+        }
+
+        /* =========================
+           OPTIONS
+        ========================= */
+
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin: 6px 2px 25px;
+
+            font-size: 12px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+
+            gap: 7px;
+
+            color: rgba(255, 255, 255, 0.60);
+
+            cursor: pointer;
+        }
+
+        .remember-me input {
+            width: 15px;
+            height: 15px;
+
+            accent-color: #647cf0;
+
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: #8295ff;
+
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            color: white;
+        }
+
+        /* =========================
+           LOGIN BUTTON
+        ========================= */
+
+        .login-btn {
+            width: 100%;
+
+            padding: 15px;
+
+            border: none;
+            border-radius: 15px;
+
+            background: linear-gradient(
+                90deg,
+                #6d5be7,
+                #416de0
+            );
+
+            color: white;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            letter-spacing: 1.5px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+            box-shadow:
+                0 8px 25px rgba(65, 91, 220, 0.25);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 12px 30px rgba(65, 91, 220, 0.35);
+        }
+
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* =========================
+           OR DIVIDER
+        ========================= */
+
+        .divider {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            margin: 25px 0 18px;
+
+            color: rgba(255, 255, 255, 0.60);
+
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+
+            height: 1px;
+
+            flex: 1;
+
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* =========================
+           DIGILOCKER
+        ========================= */
+
+        .digilocker-box {
+            padding: 20px;
+
+            border-radius: 16px;
+
+            background: rgba(75, 91, 170, 0.18);
+
+            border: 1px solid rgba(120, 140, 255, 0.25);
+        }
+
+        .digilocker-header {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            text-align: left;
+        }
+
+        .digilocker-icon {
+            width: 45px;
+            height: 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: linear-gradient(
+                135deg,
+                #8a4de8,
+                #5d63e8
+            );
+
+            font-size: 20px;
+        }
+
+        .digilocker-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .digilocker-small {
+            margin-top: 3px;
+
+            color: rgba(255, 255, 255, 0.55);
+
+            font-size: 10px;
+        }
+
+        .digilocker-description {
+            margin: 15px 0;
+
+            color: rgba(255, 255, 255, 0.68);
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+        .verify-btn {
+            width: 100%;
+
+            padding: 12px;
+
+            border-radius: 12px;
+
+            border: 1px solid #6d91ff;
+
+            background: rgba(67, 94, 180, 0.16);
+
+            color: white;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .verify-btn:hover {
+            background: rgba(86, 111, 210, 0.30);
+        }
+
+        .verify-btn i {
+            margin-right: 7px;
+        }
+
+        /* =========================
+           VERIFICATION STATUS
+        ========================= */
+
+        .verification-status {
+            display: none;
+
+            margin-top: 12px;
+
+            padding: 10px;
+
+            border-radius: 9px;
+
+            background: rgba(60, 190, 130, 0.12);
+
+            border: 1px solid rgba(60, 190, 130, 0.30);
+
+            color: #8ff0c0;
+
+            font-size: 11px;
+        }
+
+        /* =========================
+           SECURITY FOOTER
+        ========================= */
+
+        .security-note {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            gap: 7px;
+
+            margin-top: 20px;
+
+            color: rgba(255, 255, 255, 0.42);
+
+            font-size: 10px;
+
+            line-height: 1.4;
+        }
+
+        .security-note i {
+            color: #8798ff;
+        }
+
+        /* =========================
+           SIGN UP
+        ========================= */
+
+        .signup {
+            margin-top: 20px;
+
+            font-size: 12px;
+
+            color: rgba(255, 255, 255, 0.50);
+        }
+
+        .signup a {
+            color: #8496ff;
+
+            text-decoration: none;
+
+            font-weight: 600;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 500px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .login-container {
+                max-width: 100%;
+
+                padding: 28px 20px;
+
+                border-radius: 24px;
+            }
+
+            .logo {
+                width: 65px;
+                height: 65px;
+            }
+
+            .logo i {
+                font-size: 29px;
+            }
+
+            .brand-name {
+                font-size: 23px;
+            }
+
+            .login-title {
+                font-size: 20px;
+
+                margin-top: 27px;
+            }
+
+            .login-subtitle {
+                font-size: 12px;
+
+                margin-bottom: 23px;
+            }
+
+            .input-group input {
+                font-size: 13px;
+            }
+
+            .digilocker-box {
+                padding: 17px;
+            }
+
+            .digilocker-title {
+                font-size: 16px;
+            }
+
+            .digilocker-description {
+                font-size: 11px;
+            }
+
+            .options-row {
+                font-size: 11px;
+            }
+
+            .security-note {
+                padding: 0 10px;
+            }
+        }
+
+        /* Small phones */
+
+        @media (max-width: 350px) {
+
+            .login-container {
+                padding: 25px 16px;
+            }
+
+            .brand-name {
+                font-size: 21px;
+            }
+
+            .login-title {
+                font-size: 19px;
+            }
+
+            .options-row {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 10px;
+            }
+
+            .forgot-password {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <!-- LOGO -->
+        <div class="logo">
+            <i class="fa-solid fa-chart-line"></i>
+        </div>
+
+        <!-- BRAND -->
+        <h1 class="brand-name">
+            Course Impact Tracker
+        </h1>
+
+        <p class="tagline">
+            Track • Measure • Build a Better Career
+        </p>
+
+        <!-- LOGIN -->
+        <h2 class="login-title">
+            Login to Your Account
+        </h2>
+
+        <p class="login-subtitle">
+            Access your training, placement and career journey
+        </p>
+
+        <form id="loginForm">
+
+            <!-- EMAIL -->
+            <div class="input-group">
+
+                <div class="input-icon">
+                    <i class="fa-regular fa-envelope"></i>
+                </div>
+
+                <input
+                    type="text"
+                    id="email"
+                    placeholder="Email ID / Mobile Number"
+                    required
+                >
+
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="input-group">
+
+                <div class="input-icon">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="password-toggle"
+                    onclick="togglePassword()"
+                    aria-label="Show password"
+                >
+                    <i
+                        class="fa-regular fa-eye"
+                        id="eyeIcon"
+                    ></i>
+                </button>
+
+            </div>
+
+            <!-- OPTIONS -->
+            <div class="options-row">
+
+                <label class="remember-me">
+
+                    <input
+                        type="checkbox"
+                        id="remember"
+                    >
+
+                    Remember me
+
+                </label>
+
+                <a
+                    href="#"
+                    class="forgot-password"
+                    onclick="forgotPassword(event)"
+                >
+                    Forgot Password?
+                </a>
+
+            </div>
+
+            <!-- LOGIN -->
+            <button
+                type="submit"
+                class="login-btn"
+            >
+                LOGIN
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+        </form>
+
+        <!-- DIVIDER -->
+
+        <div class="divider">
+            OR
+        </div>
+
+        <!-- DIGILOCKER -->
+
+        <div class="digilocker-box">
+
+            <div class="digilocker-header">
+
+                <div class="digilocker-icon">
+                    <i class="fa-solid fa-cloud"></i>
+                </div>
+
+                <div>
+                    <div class="digilocker-title">
+                        DigiLocker
+                    </div>
+
+                    <div class="digilocker-small">
+                        Secure identity verification
+                    </div>
+                </div>
+
+            </div>
+
+            <p class="digilocker-description">
+                Verify your identity securely using DigiLocker
+                and your official documents.
+            </p>
+
+            <button
+                type="button"
+                class="verify-btn"
+                onclick="verifyDigiLocker()"
+            >
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+                Verify with DigiLocker
+
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+            <div
+                class="verification-status"
+                id="verificationStatus"
+            >
+                <i class="fa-solid fa-circle-check"></i>
+                Verification request initiated
+            </div>
+
+        </div>
+
+        <!-- SECURITY -->
+
+        <div class="security-note">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            <span>
+                Your data is safe and secure.
+                Consent-based verification is used.
+            </span>
+
+        </div>
+
+        <!-- SIGN UP -->
+
+        <div class="signup">
+
+            Don't have an account?
+
+            <a href="#" onclick="signUp(event)">
+                Create Account
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* =========================
+           PASSWORD SHOW / HIDE
+        ========================= */
+
+        function togglePassword() {
+
+            const password =
+                document.getElementById("password");
+
+            const eyeIcon =
+                document.getElementById("eyeIcon");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+                eyeIcon.classList.remove(
+                    "fa-eye"
+                );
+
+                eyeIcon.classList.add(
+                    "fa-eye-slash"
+                );
+
+            } else {
+
+                password.type = "password";
+
+                eyeIcon.classList.remove(
+                    "fa-eye-slash"
+                );
+
+                eyeIcon.classList.add(
+                    "fa-eye"
+                );
+            }
+        }
+
+
+        /* =========================
+           LOGIN
+        ========================= */
+
+        document
+            .getElementById("loginForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                const email =
+                    document.getElementById("email").value;
+
+                const password =
+                    document.getElementById("password").value;
+
+                if (!email || !password) {
+
+                    alert(
+                        "Please enter your Email/Mobile and Password."
+                    );
+
+                    return;
+                }
+
+                /*
+                    FRONTEND DEMO
+
+                    In the real project, send these
+                    credentials to your backend API.
+
+                    Example:
+
+                    POST /api/login
+                */
+
+                alert(
+                    "Login successful!\\n\\nWelcome to Course Impact Tracker."
+                );
+
+            });
+
+
+        /* =========================
+           DIGILOCKER
+        ========================= */
+
+        function verifyDigiLocker() {
+
+            /*
+                DEMO ONLY
+
+                Real DigiLocker verification requires
+                backend/API integration.
+
+                Do NOT collect DigiLocker credentials
+                directly on your website.
+            */
+
+            const status =
+                document.getElementById(
+                    "verificationStatus"
+                );
+
+            status.style.display = "block";
+
+            status.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Connecting to DigiLocker...';
+
+            /*
+                Simulating verification request
+            */
+
+            setTimeout(function() {
+
+                status.innerHTML =
+                    '<i class="fa-solid fa-circle-check"></i> DigiLocker verification initiated';
+
+            }, 1800);
+
+        }
+
+
+        /* =========================
+           FORGOT PASSWORD
+        ========================= */
+
+        function forgotPassword(event) {
+
+            event.preventDefault();
+
+            alert(
+                "Password recovery will be connected to your backend."
+            );
+        }
+
+
+        /* =========================
+           SIGN UP
+        ========================= */
+
+        function signUp(event) {
+
+            event.preventDefault();
+
+            alert(
+                "Registration page will open here."
+            );
+        }
+
+    </script>
+
+</body>
+</html>
