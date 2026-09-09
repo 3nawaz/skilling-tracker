@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Employer Portal</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            background: #f4f4f9;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            border: none;
+            background: #198754;
+            color: white;
+            cursor: pointer;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Employer Portal</h1>
+
+    <p>Verify candidate employment.</p>
+
+    <form id="form">
+
+        <input
+            id="candidate_id"
+            placeholder="Candidate ID"
+            required>
+
+        <input
+            id="company"
+            placeholder="Company"
+            required>
+
+        <input
+            id="job_role"
+            placeholder="Job Role"
+            required>
+
+        <input
+            id="salary"
+            type="number"
+            placeholder="Monthly Salary"
+            required>
+
+        <button>
+            Verify Placement
+        </button>
+
+    </form>
+
+    <p id="message"></p>
+
+</div>
+
+
+<script>
+
+document
+.getElementById("form")
+.addEventListener(
+    "submit",
+    async function(e) {
+
+        e.preventDefault();
+
+        const data = {
+
+            candidate_id:
+                document
+                .getElementById(
+                    "candidate_id"
+                ).value,
+
+            company:
+                document
+                .getElementById(
+                    "company"
+                ).value,
+
+            job_role:
+                document
+                .getElementById(
+                    "job_role"
+                ).value,
+
+            salary:
+                Number(
+                    document
+                    .getElementById(
+                        "salary"
+                    ).value
+                )
+
+        };
+
+        const response =
+            await fetch(
+                "http://127.0.0.1:8000/employer/verify-placement",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(data)
+
+                }
+            );
+
+        const result =
+            await response.json();
+
+        document
+        .getElementById("message")
+        .innerText =
+            result.message ||
+            result.detail;
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
