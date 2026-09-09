@@ -1,3 +1,4 @@
+from bson import ObjectId
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
@@ -46,3 +47,15 @@ async def get_candidates():
         candidates.append(candidate)
     
     return candidates
+
+@app.put("/candidates/{candidate_id}")
+async def update_status(candidate_id: str, placed: bool):
+    # Find the candidate by their MongoDB ObjectId and update the 'placed' field
+    result = candidates_collection.update_one(
+        {"_id": ObjectId(candidate_id)},
+        {"$set": {"placed": placed}}
+    )
+    
+    if result.modified_count == 1:
+        return {"status": "success", "message": "Candidate status updated"}
+    return {"status": "error", "message": "Update failed"}

@@ -12,6 +12,8 @@
         button:hover { background-color: #0056b3; }
         #responseMessage { margin-top: 15px; font-weight: bold; }
     </style>
+    <!-- Import Chart.js for the Analytics Dashboard -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -31,11 +33,27 @@
         </select>
 
         <button type="submit">Log to Unified Trail</button>
+        <!-- DigiLocker / Aadhaar Consent Mockup -->
+<div style="background: #eef2f5; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #ced4da;">
+    <label style="font-weight: 600; font-size: 14px; color: #495057;">Identity Verification (Govt. Integration)</label><br>
+    
+    <!-- Fake Authentication Button -->
+    <button type="button" style="background-color: #5a32a3; margin-top: 10px; width: 100%;" onclick="alert('Mockup: DigiLocker / Aadhaar consent verified successfully!')">
+        Verify via DigiLocker / Aadhaar
+    </button>
+    
+    <!-- Mandatory Consent Checkbox -->
+    <div style="margin-top: 15px; font-size: 13px; color: #6c757d; display: flex; align-items: start;">
+        <input type="checkbox" id="consentCheck" required style="margin-right: 8px; margin-top: 3px;">
+        <label for="consentCheck">I provide explicit consent to fetch my identity credentials as per the Digital Personal Data Protection Act framework.</label>
+    </div>
+</div>
     </form>
     <div id="responseMessage"></div>
 </div>
 
 <script>
+    let impactChartInstance = null;
     document.getElementById('registrationForm').addEventListener('submit', async function(e) {
         e.preventDefault(); // Prevents page reload
         
@@ -67,30 +85,86 @@
             document.getElementById('responseMessage').style.color = "red";
         }
     });
-    async function loadCandidates() {
+   async function loadCandidates() {
     try {
-        // 1. Ask the backend for the cloud data
         const response = await fetch('http://127.0.0.1:8000/candidates');
         const data = await response.json();
         
         const table = document.getElementById("candidateTable");
+        // Clear old rows before loading new ones (keeps the header intact)
+        table.innerHTML = `
+            <tr style="background-color: #f2f2f2;">
+                <th style="padding: 10px;">Candidate Name</th>
+                <th style="padding: 10px;">Training Scheme</th>
+                <th style="padding: 10px;">Placement Status</th>
+                <th style="padding: 10px;">Action</th>
+            </tr>`;
 
-        // 2. Loop through every candidate and create a new row
         data.forEach(candidate => {
             const row = table.insertRow();
             row.insertCell(0).innerText = candidate.name;
             row.insertCell(1).innerText = candidate.training_scheme;
             
-            // Format the placement status text cleanly
+            // Status text
             const statusCell = row.insertCell(2);
             statusCell.innerText = candidate.placed ? "Placed ✓" : "Not Placed ✗";
             statusCell.style.color = candidate.placed ? "green" : "red";
+            statusCell.style.fontWeight = "bold";
+
+            // Action Button for Staged Verification
+            const actionCell = row.insertCell(3);
+            const newStatus = !candidate.placed; // Flips the current status
+            actionCell.innerHTML = `<button onclick="updateCandidate('${candidate._id}', ${newStatus})" style="padding: 6px 12px; margin: 0; font-size: 12px; background-color: ${candidate.placed ? '#dc3545' : '#28a745'};">Mark as ${newStatus ? 'Placed' : 'Not Placed'}</button>`;
         });
+        // --- NEW CHART LOGIC STARTS HERE ---
+        // 1. Calculate the totals
+        const placedCount = data.filter(c => c.placed).length;
+        const notPlacedCount = data.length - placedCount;
+
+        // 2. Draw the Pie Chart
+        const ctx = document.getElementById('impactChart').getContext('2d');
+        
+        // Destroy the old chart if it exists so it doesn't overlap when refreshing
+        if (impactChartInstance) {
+            impactChartInstance.destroy();
+        }
+        
+        impactChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Placed (Verified)', 'Not Placed / Seeking'],
+                datasets: [{
+                    data: [placedCount, notPlacedCount],
+                    backgroundColor: ['#28a745', '#dc3545'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+        // --- NEW CHART LOGIC ENDS HERE ---
     } catch (error) {
         console.error("Error loading dashboard data:", error);
     }
 }
-
+async function updateCandidate(id, newStatus) {
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/candidates/${id}?placed=${newStatus}`, {
+            method: 'PUT'
+        });
+        
+        if (response.ok) {
+            // Reload the table instantly to show the new data
+            loadCandidates(); 
+        }
+    } catch (error) {
+        console.error("Failed to update candidate:", error);
+    }
+}
 // 3. Run the function immediately when the page opens
 loadCandidates();
 </script>
@@ -98,7 +172,10 @@ loadCandidates();
 <div class="container" style="max-width: 800px; margin-top: 20px;">
     <h2>Workforce Impact Dashboard</h2>
     <p>Live tracking of long-term placement metrics.</p>
-    
+    <!-- Analytics Chart Container -->
+<div style="width: 100%; max-width: 300px; margin: 0 auto 30px auto;">
+    <canvas id="impactChart"></canvas>
+</div>
     <table id="candidateTable" border="1" style="width: 100%; text-align: left; border-collapse: collapse;">
         <tr style="background-color: #f2f2f2;">
             <th style="padding: 10px;">Candidate Name</th>
