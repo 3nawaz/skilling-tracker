@@ -3,83 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unified Skilling Tracker</title>
+    <title>Skilling Tracker Prototype</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        input, select, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
-        button { background-color: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; }
-        button:hover { background-color: #218838; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #007bff; color: white; }
+        .container { max-width: 500px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+        input, select, button { width: 100%; margin: 10px 0; padding: 10px; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #responseMessage { margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Register Candidate Data</h2>
-    <input type="text" id="name" placeholder="Candidate Name" required>
-    <input type="text" id="scheme" placeholder="Training Scheme (e.g., PMKVY)" required>
-    <select id="placed">
-        <option value="true">Placed Successfully</option>
-        <option value="false">Not Placed</option>
-    </select>
-    <button onclick="registerCandidate()">Add to Unified Trail</button>
+    <h2>Register Candidate Training</h2>
+    <form id="registrationForm">
+        <label>Candidate Name:</label>
+        <input type="text" id="name" required>
 
-    <h2>Live Outcome Tracking</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Training Scheme</th>
-                <th>Placed</th>
-                <th>Long-term Retention</th>
-            </tr>
-        </thead>
-        <tbody id="dashboard-body">
-            <!-- Data will load here -->
-        </tbody>
-    </table>
+        <label>Training Scheme (e.g., PMKVY):</label>
+        <input type="text" id="training_scheme" required>
+
+        <label>Current Placement Status:</label>
+        <select id="placed">
+            <option value="true">Placed</option>
+            <option value="false">Not Placed</option>
+        </select>
+
+        <button type="submit">Log to Unified Trail</button>
+    </form>
+    <div id="responseMessage"></div>
 </div>
 
 <script>
-    const API_URL = "http://127.0.0.1:8000";
-
-    async function fetchDashboard() {
-        const response = await fetch(`${API_URL}/candidates`);
-        const data = await response.json();
-        const tbody = document.getElementById("dashboard-body");
-        tbody.innerHTML = ""; 
+    document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Prevents page reload
         
+        // Gather data from the form
+        const candidateData = {
+            name: document.getElementById('name').value,
+            training_scheme: document.getElementById('training_scheme').value,
+            placed: document.getElementById('placed').value === 'true'
+        };
+
+        // Send data to your FastAPI backend
+        try {
+            const response = await fetch('http://127.0.0.1:8000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({
+    "name": "Test User",
+    "training_scheme": "PMKVY",
+    "placed": true
+})
+            });
+            const result = await response.json();
+            
+            // Show success message
+            document.getElementById('responseMessage').innerText = result.message;
+            document.getElementById('responseMessage').style.color = "green";
+        } catch (error) {
+            document.getElementById('responseMessage').innerText = "Error connecting to server.";
+            document.getElementById('responseMessage').style.color = "red";
+        }
+    });
+    async function loadCandidates() {
+    try {
+        // 1. Ask the backend for the cloud data
+        const response = await fetch('http://127.0.0.1:8000/candidates');
+        const data = await response.json();
+        
+        const table = document.getElementById("candidateTable");
+
+        // 2. Loop through every candidate and create a new row
         data.forEach(candidate => {
-            const row = `<tr>
-                <td>${candidate.name}</td>
-                <td>${candidate.training_scheme}</td>
-                <td>${candidate.placed ? "✅ Yes" : "❌ No"}</td>
-                <td>${candidate.retention_verified ? "Verified" : "Pending 6-Mo Check"}</td>
-            </tr>`;
-            tbody.innerHTML += row;
+            const row = table.insertRow();
+            row.insertCell(0).innerText = candidate.name;
+            row.insertCell(1).innerText = candidate.training_scheme;
+            
+            // Format the placement status text cleanly
+            const statusCell = row.insertCell(2);
+            statusCell.innerText = candidate.placed ? "Placed ✓" : "Not Placed ✗";
+            statusCell.style.color = candidate.placed ? "green" : "red";
         });
+    } catch (error) {
+        console.error("Error loading dashboard data:", error);
     }
+}
 
-    async function registerCandidate() {
-        const name = document.getElementById("name").value;
-        const scheme = document.getElementById("scheme").value;
-        const placed = document.getElementById("placed").value === "true";
-
-        await fetch(`${API_URL}/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: name, training_scheme: scheme, placed: placed })
-        });
-
-        fetchDashboard(); // Reload the table instantly
-    }
-
-    // Load data when page opens
-    fetchDashboard();
+// 3. Run the function immediately when the page opens
+loadCandidates();
 </script>
-
+<hr style="margin-top: 40px;">
+<div class="container" style="max-width: 800px; margin-top: 20px;">
+    <h2>Workforce Impact Dashboard</h2>
+    <p>Live tracking of long-term placement metrics.</p>
+    
+    <table id="candidateTable" border="1" style="width: 100%; text-align: left; border-collapse: collapse;">
+        <tr style="background-color: #f2f2f2;">
+            <th style="padding: 10px;">Candidate Name</th>
+            <th style="padding: 10px;">Training Scheme</th>
+            <th style="padding: 10px;">Placement Status</th>
+        </tr>
+    </table>
+</div>
 </body>
 </html>

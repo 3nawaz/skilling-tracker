@@ -5,21 +5,19 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# Allow your HTML file to communicate with this API
+# Add this CORS block to allow the frontend (port 3000) to communicate with the backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # The "*" allows requests from any origin during development
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Your Atlas connection string
-MONGO_URI = "mongodb+srv://muzffarnawazalam_db_user:WJqFi5WKr3sL9b8a@cluster0.vsiguh9.mongodb.net/?appName=Cluster0" # Ensure this is your Atlas URI
+MONGO_URI = "mongodb+srv://muzffarnawazalam_db_user:WJqFi5WKr3sL9b8a@cluster0.vsiguh9.mongodb.net/?appName=Cluster0" 
 client = MongoClient(MONGO_URI)
 db = client["skilling_database"]
 candidates_collection = db["candidates"]
-
 class Candidate(BaseModel):
     name: str
     training_scheme: str
@@ -36,4 +34,15 @@ def register_candidate(candidate: Candidate):
 def get_candidates():
     # Retrieve all records, ignoring the MongoDB specific '_id' object
     candidates = list(candidates_collection.find({}, {"_id": 0}))
+    return candidates
+
+@app.get("/candidates")
+async def get_candidates():
+    candidates = []
+    # Fetch all records from the cloud database
+    for candidate in candidates_collection.find():
+        # Convert the MongoDB ObjectId to a string so FastAPI can send it
+        candidate["_id"] = str(candidate["_id"]) 
+        candidates.append(candidate)
+    
     return candidates
